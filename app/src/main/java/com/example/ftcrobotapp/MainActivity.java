@@ -2,9 +2,11 @@ package com.example.ftcrobotapp;
 
 import android.os.Bundle;
 import android.service.controls.Control;
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +30,18 @@ public class MainActivity extends AppCompatActivity {
         });
 
         int[] controllerIDs = getGameControllerIds().stream().mapToInt(Integer::intValue).toArray();
+
+        TextView aButtonTV = findViewById(R.id.tv_buttonA);
+
+        Log.d("TEST", "1");
+        while (true) {
+            try {
+                wait(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            aButtonTV.setText(controllerState.getButton(ControllerState.A));
+        }
     }
 
     public ArrayList<Integer> getGameControllerIds() {

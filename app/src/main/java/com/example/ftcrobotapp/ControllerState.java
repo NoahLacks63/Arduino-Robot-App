@@ -27,26 +27,26 @@ public class ControllerState {
     public static final int RIGHT_TRIGGER = 18;
     public static final int LEFT_TRIGGER = 19;
 
-    private final Map<Integer, Integer> controllerState;
+    private final Map<Integer, Byte> controllerState;
     private final Map<Integer, Short> axisState;
 
     public ControllerState() {
         controllerState = new LinkedHashMap<>();
 
-        controllerState.put(A, 0);
-        controllerState.put(B, 0);
-        controllerState.put(X, 0);
-        controllerState.put(Y, 0);
-        controllerState.put(DPAD_UP, 0);
-        controllerState.put(DPAD_LEFT, 0);
-        controllerState.put(DPAD_RIGHT, 0);
-        controllerState.put(DPAD_DOWN, 0);
-        controllerState.put(LB, 0);
-        controllerState.put(RB, 0);
-        controllerState.put(LEFT_STICK, 0);
-        controllerState.put(RIGHT_STICK, 0);
-        controllerState.put(START, 0);
-        controllerState.put(HOME, 0);
+        controllerState.put(A, (byte) 0);
+        controllerState.put(B, (byte) 0);
+        controllerState.put(X, (byte) 0);
+        controllerState.put(Y, (byte) 0);
+        controllerState.put(DPAD_UP, (byte) 0);
+        controllerState.put(DPAD_LEFT, (byte) 0);
+        controllerState.put(DPAD_RIGHT, (byte) 0);
+        controllerState.put(DPAD_DOWN, (byte) 0);
+        controllerState.put(LB, (byte) 0);
+        controllerState.put(RB, (byte) 0);
+        controllerState.put(LEFT_STICK, (byte) 0);
+        controllerState.put(RIGHT_STICK, (byte) 0);
+        controllerState.put(START, (byte) 0);
+        controllerState.put(HOME, (byte) 0);
 
         axisState = new LinkedHashMap<>();
 
@@ -58,22 +58,28 @@ public class ControllerState {
         axisState.put(RIGHT_TRIGGER, (short) 0);
     }
 
+    public byte getButton(int button) {
+        return controllerState.get(button);
+    }
     public void setButton(int button, boolean value) {
         if (value) {
-            controllerState.put(button, 1);
+            controllerState.put(button, (byte) 1);
+        } else {
+            controllerState.put(button, (byte) 0);
         }
+        System.out.println("Button: " + String.valueOf(button) + String.valueOf(value));
     }
 
     public void setAxis(int axis, double value) {
         axisState.put(axis, (short) (value * 1000));
+        System.out.println("Axis: " + String.valueOf(axis) + String.valueOf(value));
     }
 
     public byte[] getBytes() {
         ArrayList<Byte> result = new ArrayList<>();
 
-        for (Map.Entry<Integer, Integer> entry : controllerState.entrySet()) {
-            Integer value = entry.getValue();
-            result.add(value.byteValue());
+        for (Map.Entry<Integer, Byte> entry : controllerState.entrySet()) {
+            result.add(entry.getValue());
         }
 
         byte[] byteArray = new byte[result.size()];
