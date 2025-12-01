@@ -1,6 +1,7 @@
 package com.example.ftcrobotapp;
 
 import android.os.Bundle;
+import android.service.controls.Control;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -221,10 +222,16 @@ public class MainActivity extends AppCompatActivity {
         float rX = getCenteredAxis(event, inputDevice, MotionEvent.AXIS_Z, historyPos);
         float rY = getCenteredAxis(event, inputDevice, MotionEvent.AXIS_RZ, historyPos);
 
+        float lTrigger = event.getAxisValue(MotionEvent.AXIS_LTRIGGER);
+        float rTrigger = event.getAxisValue(MotionEvent.AXIS_RTRIGGER);
+
         controllerState.setAxis(ControllerState.LEFT_X, lX);
         controllerState.setAxis(ControllerState.LEFT_Y, lY);
 
         controllerState.setAxis(ControllerState.RIGHT_X, rX);
         controllerState.setAxis(ControllerState.RIGHT_Y, rY);
+
+        controllerState.setAxis(ControllerState.LEFT_TRIGGER, lTrigger);
+        controllerState.setAxis(ControllerState.RIGHT_TRIGGER, rTrigger);
     }
 }

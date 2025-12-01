@@ -24,8 +24,11 @@ public class ControllerState {
     public static final int LEFT_X = 15;
     public static final int RIGHT_Y = 16;
     public static final int RIGHT_X = 17;
+    public static final int RIGHT_TRIGGER = 18;
+    public static final int LEFT_TRIGGER = 19;
 
-    private Map<Integer, Integer> controllerState;
+    private final Map<Integer, Integer> controllerState;
+    private final Map<Integer, Short> axisState;
 
     public ControllerState() {
         controllerState = new LinkedHashMap<>();
@@ -44,10 +47,15 @@ public class ControllerState {
         controllerState.put(RIGHT_STICK, 0);
         controllerState.put(START, 0);
         controllerState.put(HOME, 0);
-        controllerState.put(LEFT_Y, 0);
-        controllerState.put(LEFT_X, 0);
-        controllerState.put(RIGHT_Y, 0);
-        controllerState.put(RIGHT_X, 0);
+
+        axisState = new LinkedHashMap<>();
+
+        axisState.put(LEFT_Y, (short) 0);
+        axisState.put(LEFT_X, (short) 0);
+        axisState.put(RIGHT_Y, (short) 0);
+        axisState.put(RIGHT_X, (short) 0);
+        axisState.put(LEFT_TRIGGER, (short) 0);
+        axisState.put(RIGHT_TRIGGER, (short) 0);
     }
 
     public void setButton(int button, boolean value) {
@@ -57,7 +65,7 @@ public class ControllerState {
     }
 
     public void setAxis(int axis, double value) {
-        controllerState.put(axis, (int) (value * 1000));
+        axisState.put(axis, (short) (value * 1000));
     }
 
     public byte[] getBytes() {
