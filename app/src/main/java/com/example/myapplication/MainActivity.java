@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import android.content.Context;
+import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -8,28 +10,64 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class MainActivity extends AppCompatActivity {
-    private TextView output;
+import java.util.HashSet;
+import java.util.Set;
+
+public class MainActivity extends AppCompatActivity implements InputManager.InputDeviceListener {
+    private ConstraintLayout output;
+    private InputManager inputManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        output = findViewById(R.id.main);
+
         // Ensure Activity receives key events
         output.setFocusable(true);
         output.setFocusableInTouchMode(true);
         output.requestFocus();
+
+        inputManager = (InputManager) getSystemService(Context.INPUT_SERVICE);
     }
+
+    Set<InputDevice> controllers = new HashSet<>();
 
     Controller controller = new Controller();
 
     UDPSender udpSender = new UDPSender();
-    // TODO start thread
-    Thread udpThread = new Thread(udpSender);
+    UDPReceiver receiver = new UDPReceiver();
+
+    // TODO start sender thread
+    Thread udpSenderThread = new Thread(udpSender);
+    // TODO start receiver thread
+    Thread udpReceiverThread = new Thread(receiver);
+
+    @Override
+    public void onInputDeviceAdded(int deviceId) {
+        InputDevice device = inputManager.getInputDevice(deviceId);
+        if (device != null && (device.getSources() & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD) {
+            controllers.add(device);
+        }
+    }
+
+    @Override
+    public void onInputDeviceChanged(int deviceId) {
+
+    }
+
+    @Override
+    public void onInputDeviceRemoved(int deviceId) {
+        InputDevice device = inputManager.getInputDevice(deviceId);
+        if (device != null && (device.getSources() & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD) {
+            controllers.remove(device);
+        }
+    }
 
     // Handle controller buttons
     @Override
