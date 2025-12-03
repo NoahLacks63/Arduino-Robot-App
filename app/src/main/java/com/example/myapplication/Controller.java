@@ -1,7 +1,5 @@
 package com.example.myapplication;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -63,13 +61,12 @@ public class Controller {
         }
 
         // ---- PACK SHORTS ----
-        int base = numFlagBytes;
         for (int i = 0; i < numShorts; i++) {
             Axes key = shortKeys[i];
             short s = (short) Math.round(axisState.getOrDefault(key, 0.0) * 32767);
 
-            out[base + i*2]     = (byte)(s & 0xFF);        // low byte
-            out[base + i*2 + 1] = (byte)((s >> 8) & 0xFF); // high byte
+            out[numFlagBytes + i*2]     = (byte)(s & 0xFF);        // low byte
+            out[numFlagBytes + i*2 + 1] = (byte)((s >> 8) & 0xFF); // high byte
         }
 
         return out;
