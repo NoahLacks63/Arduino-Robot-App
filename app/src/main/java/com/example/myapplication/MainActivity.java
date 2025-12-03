@@ -27,6 +27,10 @@ public class MainActivity extends AppCompatActivity {
 
     Controller controller = new Controller();
 
+    UDPSender udpSender = new UDPSender();
+    // TODO start thread
+    Thread udpThread = new Thread(udpSender);
+
     // Handle controller buttons
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -94,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
                 controller.setButton(Buttons.MODE, value);
                 return true;
         }
+
+        udpSender.setMessage(controller.getMessage());
 
         return false;
     }
