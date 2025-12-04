@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.udp;
 
 import android.util.Log;
 
@@ -12,7 +12,7 @@ public class UDPSender implements Runnable{
 
     private boolean running = true;
 
-    private byte[] message = new byte[0];
+    private volatile byte[] message = new byte[0];
 
     public void stop() {
         running = false;
@@ -34,7 +34,7 @@ public class UDPSender implements Runnable{
             }
 
         } catch (Exception e) {
-            Log.d("udp", e.toString());
+            Log.d("UDP", e.toString());
         }
     }
 

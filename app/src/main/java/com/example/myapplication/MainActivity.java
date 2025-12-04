@@ -6,27 +6,27 @@ import android.os.Bundle;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.example.myapplication.controller.Axes;
+import com.example.myapplication.controller.Buttons;
+import com.example.myapplication.controller.Controller;
+import com.example.myapplication.udp.UDPReceiver;
+import com.example.myapplication.udp.UDPSender;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements InputManager.InputDeviceListener {
-    private ConstraintLayout output;
     private InputManager inputManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        output = findViewById(R.id.main);
+        ConstraintLayout output = findViewById(R.id.main);
 
         // Ensure Activity receives key events
         output.setFocusable(true);

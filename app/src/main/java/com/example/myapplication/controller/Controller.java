@@ -1,39 +1,36 @@
-package com.example.myapplication;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
+package com.example.myapplication.controller;
 
 public class Controller {
 
-    private Map<Buttons, Boolean> buttonState;
-    private Map<Axes, Double> axisState;
+    private boolean[] buttonState;
+    private double[] axisState;
 
     public Controller() {
-        buttonState = new LinkedHashMap<>();
-
+        buttonState = new boolean[Buttons.values().length];
         for (Buttons button : Buttons.values()) {
-            buttonState.put(button, false);
+            buttonState[button.ordinal()] = false;
         }
 
+        axisState = new double[Axes.values().length];
         for (Axes axis : Axes.values()) {
-            axisState.put(axis, 0.0);
+            axisState[axis.ordinal()] = 0.0;
         }
     }
 
     public boolean getButton(Buttons button) {
-        return buttonState.get(button);
+        return buttonState[button.ordinal()];
     }
 
     public void setButton(Buttons button, boolean value) {
-        buttonState.put(button, value);
+        buttonState[button.ordinal()] = value;
     }
 
     public double getAxis(Axes axis) {
-        return axisState.get(axis);
+        return axisState[axis.ordinal()];
     }
 
     public void setAxis(Axes axis, double value) {
-        axisState.put(axis, value);
+        axisState[axis.ordinal()] = value;
     }
 
     public byte[] getMessage() {
@@ -51,7 +48,7 @@ public class Controller {
         // ---- PACK BOOLEAN FLAGS ----
         for (int i = 0; i < numFlags; i++) {
             Buttons key = boolKeys[i];
-            boolean val = buttonState.getOrDefault(key, false);
+            boolean val = buttonState[key.ordinal()];
 
             if (val) {
                 int byteIndex = i / 8;
@@ -63,7 +60,7 @@ public class Controller {
         // ---- PACK SHORTS ----
         for (int i = 0; i < numShorts; i++) {
             Axes key = shortKeys[i];
-            short s = (short) Math.round(axisState.getOrDefault(key, 0.0) * 32767);
+            short s = (short) Math.round(axisState[key.ordinal()] * 32767);
 
             out[numFlagBytes + i*2]     = (byte)(s & 0xFF);        // low byte
             out[numFlagBytes + i*2 + 1] = (byte)((s >> 8) & 0xFF); // high byte
