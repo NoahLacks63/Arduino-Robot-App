@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
     private TextView dpadDownTV;
     private TextView dpadLeftTV;
     private TextView dpadRightTV;
+    private TextView lbTV;
+    private TextView rbTV;
     private TextView selectTV;
     private TextView startTV;
     private TextView modeTV;
@@ -74,6 +76,22 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
         setContentView(R.layout.activity_main);
 
         inputManager = (InputManager) getSystemService(Context.INPUT_SERVICE);
+
+        aTV = findViewById(R.id.tv_AVal);
+        bTV = findViewById(R.id.tv_BVal);
+        xTV = findViewById(R.id.tv_XVal);
+        yTV = findViewById(R.id.tv_YVal);
+        dpadUpTV = findViewById(R.id.tv_DpadUpVal);
+        dpadDownTV = findViewById(R.id.tv_DpadDownVal);
+        dpadLeftTV = findViewById(R.id.tv_DpadLeftVal);
+        dpadRightTV = findViewById(R.id.tv_DpadRightVal);
+        lbTV = findViewById(R.id.tv_LBVal);
+        rbTV = findViewById(R.id.tv_RBVal);
+        selectTV = findViewById(R.id.tv_SelectVal);
+        startTV = findViewById(R.id.tv_StartVal);
+        modeTV = findViewById(R.id.tv_ModeVal);
+        lstickTV = findViewById(R.id.tv_LeftStickVal);
+        rstickTV = findViewById(R.id.tv_RightStickVal);
 
         lxTV = findViewById(R.id.tv_LeftX);
         lxPB = findViewById(R.id.pb_LeftX);
@@ -131,57 +149,77 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
 
         boolean value = (action == KeyEvent.ACTION_DOWN);
 
+        TextView tv;
+
         switch (key) {
             case KeyEvent.KEYCODE_BUTTON_A:
                 controller.setButton(Buttons.A, value);
-                return true;
+                tv = aTV;
+                break;
             case KeyEvent.KEYCODE_BUTTON_B:
                 controller.setButton(Buttons.B, value);
-                return true;
+                tv = bTV;
+                break;
             case KeyEvent.KEYCODE_BUTTON_X:
                 controller.setButton(Buttons.X, value);
-                return true;
+                tv = xTV;
+                break;
             case KeyEvent.KEYCODE_BUTTON_Y:
                 controller.setButton(Buttons.Y, value);
-                return true;
+                tv = yTV;
+                break;
             case KeyEvent.KEYCODE_DPAD_UP:
                 controller.setButton(Buttons.DPAD_UP, value);
-                return true;
+                tv = dpadUpTV;
+                break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
                 controller.setButton(Buttons.DPAD_DOWN, value);
-                return true;
+                tv = dpadDownTV;
+                break;
             case KeyEvent.KEYCODE_DPAD_LEFT:
                 controller.setButton(Buttons.DPAD_LEFT, value);
-                return true;
+                tv = dpadLeftTV;
+                break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
                 controller.setButton(Buttons.DPAD_RIGHT, value);
-                return true;
+                tv = dpadRightTV;
+                break;
             case KeyEvent.KEYCODE_BUTTON_L1:
                 controller.setButton(Buttons.LB, value);
-                return true;
+                tv = lbTV;
+                break;
             case KeyEvent.KEYCODE_BUTTON_R1:
                 controller.setButton(Buttons.RB, value);
-                return true;
+                tv = rbTV;
+                break;
             case KeyEvent.KEYCODE_BUTTON_THUMBL:
                 controller.setButton(Buttons.THUMBL, value);
-                return true;
+                tv = lstickTV;
+                break;
             case KeyEvent.KEYCODE_BUTTON_THUMBR:
                 controller.setButton(Buttons.THUMBR, value);
-                return true;
+                tv = rstickTV;
+                break;
             case KeyEvent.KEYCODE_BUTTON_START:
                 controller.setButton(Buttons.START, value);
-                return true;
+                tv = startTV;
+                break;
             case KeyEvent.KEYCODE_BUTTON_SELECT:
                 controller.setButton(Buttons.SELECT, value);
-                return true;
+                tv = selectTV;
+                break;
             case KeyEvent.KEYCODE_BUTTON_MODE:
                 controller.setButton(Buttons.MODE, value);
-                return true;
+                tv = modeTV;
+                break;
+            default:
+                return super.dispatchKeyEvent(event);
         }
+        updateTextView(tv, value ? "\uD83D\uDFE9" : "\uD83D\uDFE5");
 
         udpSender.setMessage(controller.getMessage());
 
-        return super.dispatchKeyEvent(event);
+        return true;
     }
 
     // Handle analog sticks and triggers
@@ -193,34 +231,34 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
             // Left stick
             double lX = event.getAxisValue(MotionEvent.AXIS_X);
             controller.setAxis(Axes.LEFTX, lX);
-            updateTextView(lxTV, "Left X " + lX);
+            updateTextView(lxTV, "Left X " + String.format("%.2f", lX));
             updateProgressBar(lxPB, lX);
 
             double lY = event.getAxisValue(MotionEvent.AXIS_Y);
             controller.setAxis(Axes.LEFTY, lY);
-            updateTextView(lyTV, "Left Y " + lY);
+            updateTextView(lyTV, "Left Y " + String.format("%.2f", lY));
             updateProgressBar(lyPB, lY);
 
             // Right stick
             double rX = event.getAxisValue(MotionEvent.AXIS_Z);
             controller.setAxis(Axes.RIGHTX, rX);
-            updateTextView(rxTV, "Right X: " + rX);
+            updateTextView(rxTV, "Right X: " + String.format("%.2f", rX));
             updateProgressBar(rxPB, rX);
 
             double rY = event.getAxisValue(MotionEvent.AXIS_RZ);
             controller.setAxis(Axes.RIGHTY, rY);
-            updateTextView(ryTV, "Right Y: " + rY);
+            updateTextView(ryTV, "Right Y: " + String.format("%.2f", rY));
             updateProgressBar(ryPB, rY);
 
             // Triggers
             double lt = event.getAxisValue(MotionEvent.AXIS_LTRIGGER);
             controller.setAxis(Axes.LTRIGGER, lt);
-            updateTextView(lTriggerTV, "Left Trigger: " + lt);
+            updateTextView(lTriggerTV, "Left Trigger: " + String.format("%.2f", lt));
             updateProgressBar(lTriggerPB, lt);
 
             double rt = event.getAxisValue(MotionEvent.AXIS_RTRIGGER);
             controller.setAxis(Axes.RTRIGGER, rt);
-            updateTextView(rTriggerTV, "Right Trigger: " + rt);
+            updateTextView(rTriggerTV, "Right Trigger: " + String.format("%.2f", rt));
             updateProgressBar(rTriggerPB, rt);
 
             return true;

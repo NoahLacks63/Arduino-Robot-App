@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:fitsSystemWindows="true">
 
     <View
         android:id="@+id/view3"
@@ -58,6 +59,7 @@
         android:layout_weight="1"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view3">
 
@@ -116,17 +118,46 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-            <TextView
-                android:id="@+id/tv_LeftStick"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Left Stick: " />
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tv_RightStick"
+                <TextView
+                    android:id="@+id/tv_LeftStick"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Left Stick: " />
+
+                <TextView
+                    android:id="@+id/tv_LeftStickVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:text="🟥" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Right Stick: " />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_RightStick"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Right Stick: " />
+
+                <TextView
+                    android:id="@+id/tv_RightStickVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:text="🟥" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -160,17 +191,46 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <TextView
-                android:id="@+id/tv_LB"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Left Bumper: " />
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tv_RB"
+                <TextView
+                    android:id="@+id/tv_LB"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Left Bumper: " />
+
+                <TextView
+                    android:id="@+id/tv_LBVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:text="🟥" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Right Bumper: " />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_RB"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Right Bumper: " />
+
+                <TextView
+                    android:id="@+id/tv_RBVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:text="🟥" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -180,29 +240,86 @@
             android:orientation="vertical"
             android:padding="5dp">
 
-            <TextView
-                android:id="@+id/tv_DpadUp"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="DPAD Up: " />
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tv_DpadDown"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="DPAD Down: " />
+                <TextView
+                    android:id="@+id/tv_DpadUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="DPAD Up: " />
 
-            <TextView
-                android:id="@+id/tv_DpadLeft"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="DPAD Left: " />
+                <TextView
+                    android:id="@+id/tv_DpadUpVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:text="🟥" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_DpadRight"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="DPAD Right: " />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_DpadDown"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="DPAD Down: " />
+
+                <TextView
+                    android:id="@+id/tv_DpadDownVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:text="🟥" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_DpadLeft"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="DPAD Left: " />
+
+                <TextView
+                    android:id="@+id/tv_DpadLeftVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:text="🟥" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_DpadRight"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="DPAD Right: " />
+
+                <TextView
+                    android:id="@+id/tv_DpadRightVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:text="🟥" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -212,29 +329,86 @@
             android:orientation="vertical"
             android:padding="5dp">
 
-            <TextView
-                android:id="@+id/tv_A"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="A: " />
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tv_B"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="B: " />
+                <TextView
+                    android:id="@+id/tv_A"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="A: " />
 
-            <TextView
-                android:id="@+id/tv_X"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="X: " />
+                <TextView
+                    android:id="@+id/tv_AVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:text="🟥" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_Y"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Y: " />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_B"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="B: " />
+
+                <TextView
+                    android:id="@+id/tv_BVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:text="🟥" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_X"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="X: " />
+
+                <TextView
+                    android:id="@+id/tv_XVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:text="🟥" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_Y"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Y: " />
+
+                <TextView
+                    android:id="@+id/tv_YVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:text="🟥" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -244,23 +418,65 @@
             android:orientation="vertical"
             android:padding="5dp">
 
-            <TextView
-                android:id="@+id/tv_Start"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Start: " />
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tv_Select"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Select: " />
+                <TextView
+                    android:id="@+id/tv_Start"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Start: " />
 
-            <TextView
-                android:id="@+id/tv_Mode"
+                <TextView
+                    android:id="@+id/tv_StartVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:text="🟥" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Mode: " />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_Select"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Select: " />
+
+                <TextView
+                    android:id="@+id/tv_SelectVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:text="🟥" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_Mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Mode: " />
+
+                <TextView
+                    android:id="@+id/tv_ModeVal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:text="🟥" />
+            </LinearLayout>
 
         </LinearLayout>
 
