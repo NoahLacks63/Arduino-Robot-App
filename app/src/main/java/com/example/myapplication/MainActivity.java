@@ -234,9 +234,7 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
     }
 
     public void updateProgressBar(ProgressBar pb, double val) {
-        int out = Math.toIntExact(Math.round(pb.getMax() * (
-                (val + 1) / 2))
-        );
+        int out = Math.toIntExact(Math.round(pb.getMax() * ((val + 1) / 2)));
         pb.setProgress(out);
     }
 }
