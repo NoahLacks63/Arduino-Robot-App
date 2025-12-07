@@ -149,6 +149,9 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
 
         boolean value = (action == KeyEvent.ACTION_DOWN);
 
+        Log.d("CONTROLLER", "Key: " + key);
+        Log.d("CONTROLLER", "Val: " + value);
+
         TextView tv;
 
         switch (key) {
@@ -260,6 +263,21 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
             controller.setAxis(Axes.RTRIGGER, rt);
             updateTextView(rTriggerTV, "Right Trigger: " + String.format("%.2f", rt));
             updateProgressBar(rTriggerPB, rt);
+
+            boolean hUp = event.getAxisValue(MotionEvent.AXIS_HAT_X) == -1;
+            boolean hDown = event.getAxisValue(MotionEvent.AXIS_HAT_X) == 1;
+            boolean hLeft = event.getAxisValue(MotionEvent.AXIS_HAT_Y) == -1;
+            boolean hRight = event.getAxisValue(MotionEvent.AXIS_HAT_Y) == 1;
+
+            controller.setButton(Buttons.DPAD_UP, hUp);
+            updateTextView(dpadUpTV, hUp ? "\uD83D\uDFE9" : "\uD83D\uDFE5");
+            controller.setButton(Buttons.DPAD_DOWN, hDown);
+            updateTextView(dpadDownTV, hDown ? "\uD83D\uDFE9" : "\uD83D\uDFE5");
+
+            controller.setButton(Buttons.DPAD_LEFT, hLeft);
+            updateTextView(dpadLeftTV, hLeft ? "\uD83D\uDFE9" : "\uD83D\uDFE5");
+            controller.setButton(Buttons.DPAD_RIGHT, hRight);
+            updateTextView(dpadRightTV, hRight ? "\uD83D\uDFE9" : "\uD83D\uDFE5");
 
             return true;
         }
