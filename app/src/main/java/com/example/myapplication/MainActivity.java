@@ -3,19 +3,22 @@ package com.example.myapplication;
 import android.content.Context;
 import android.hardware.input.InputManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.myapplication.controller.Axes;
 import com.example.myapplication.controller.Buttons;
-import com.example.myapplication.controller.Controller;
+import com.example.myapplication.controller.ControlInfo;
 import com.example.myapplication.udp.UDPReceiver;
 import com.example.myapplication.udp.UDPSender;
 
@@ -60,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
 
     private Set<InputDevice> controllers;
 
-    private Controller controller;
+    private ControlInfo controlInfo;
 
     private UDPSender udpSender;
     private UDPReceiver receiver;
@@ -68,12 +71,19 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
     private Thread udpSenderThread;
     private Thread udpReceiverThread;
 
+    private final Handler handler = new Handler();
+    private final Runnable hideRunnable = this::hideSystemUI;
+
+    private FragmentManager fragmentManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
+        hideSystemUI();
 
         inputManager = (InputManager) getSystemService(Context.INPUT_SERVICE);
 
@@ -110,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
 
         controllers = new HashSet<>();
 
-        controller = new Controller();
+        controlInfo = new ControlInfo();
 
         udpSender = new UDPSender();
         receiver = new UDPReceiver();
@@ -119,6 +129,8 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
         udpSenderThread = new Thread(udpSender);
         // TODO start receiver thread
         udpReceiverThread = new Thread(receiver);
+
+        fragmentManager = getSupportFragmentManager();
     }
 
     @Override
@@ -156,63 +168,63 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
 
         switch (key) {
             case KeyEvent.KEYCODE_BUTTON_A:
-                controller.setButton(Buttons.A, value);
+                controlInfo.setButton(Buttons.A, value);
                 tv = aTV;
                 break;
             case KeyEvent.KEYCODE_BUTTON_B:
-                controller.setButton(Buttons.B, value);
+                controlInfo.setButton(Buttons.B, value);
                 tv = bTV;
                 break;
             case KeyEvent.KEYCODE_BUTTON_X:
-                controller.setButton(Buttons.X, value);
+                controlInfo.setButton(Buttons.X, value);
                 tv = xTV;
                 break;
             case KeyEvent.KEYCODE_BUTTON_Y:
-                controller.setButton(Buttons.Y, value);
+                controlInfo.setButton(Buttons.Y, value);
                 tv = yTV;
                 break;
             case KeyEvent.KEYCODE_DPAD_UP:
-                controller.setButton(Buttons.DPAD_UP, value);
+                controlInfo.setButton(Buttons.DPAD_UP, value);
                 tv = dpadUpTV;
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
-                controller.setButton(Buttons.DPAD_DOWN, value);
+                controlInfo.setButton(Buttons.DPAD_DOWN, value);
                 tv = dpadDownTV;
                 break;
             case KeyEvent.KEYCODE_DPAD_LEFT:
-                controller.setButton(Buttons.DPAD_LEFT, value);
+                controlInfo.setButton(Buttons.DPAD_LEFT, value);
                 tv = dpadLeftTV;
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
-                controller.setButton(Buttons.DPAD_RIGHT, value);
+                controlInfo.setButton(Buttons.DPAD_RIGHT, value);
                 tv = dpadRightTV;
                 break;
             case KeyEvent.KEYCODE_BUTTON_L1:
-                controller.setButton(Buttons.LB, value);
+                controlInfo.setButton(Buttons.LB, value);
                 tv = lbTV;
                 break;
             case KeyEvent.KEYCODE_BUTTON_R1:
-                controller.setButton(Buttons.RB, value);
+                controlInfo.setButton(Buttons.RB, value);
                 tv = rbTV;
                 break;
             case KeyEvent.KEYCODE_BUTTON_THUMBL:
-                controller.setButton(Buttons.THUMBL, value);
+                controlInfo.setButton(Buttons.THUMBL, value);
                 tv = lstickTV;
                 break;
             case KeyEvent.KEYCODE_BUTTON_THUMBR:
-                controller.setButton(Buttons.THUMBR, value);
+                controlInfo.setButton(Buttons.THUMBR, value);
                 tv = rstickTV;
                 break;
             case KeyEvent.KEYCODE_BUTTON_START:
-                controller.setButton(Buttons.START, value);
+                controlInfo.setButton(Buttons.START, value);
                 tv = startTV;
                 break;
             case KeyEvent.KEYCODE_BUTTON_SELECT:
-                controller.setButton(Buttons.SELECT, value);
+                controlInfo.setButton(Buttons.SELECT, value);
                 tv = selectTV;
                 break;
             case KeyEvent.KEYCODE_BUTTON_MODE:
-                controller.setButton(Buttons.MODE, value);
+                controlInfo.setButton(Buttons.MODE, value);
                 tv = modeTV;
                 break;
             default:
@@ -220,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
         }
         updateTextView(tv, value ? "\uD83D\uDFE9" : "\uD83D\uDFE5");
 
-        udpSender.setMessage(controller.getMessage());
+        udpSender.setMessage(controlInfo.getMessage());
 
         return true;
     }
@@ -233,34 +245,34 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
 
             // Left stick
             double lX = event.getAxisValue(MotionEvent.AXIS_X);
-            controller.setAxis(Axes.LEFTX, lX);
+            controlInfo.setAxis(Axes.LEFTX, lX);
             updateTextView(lxTV, "Left X " + String.format("%.2f", lX));
             updateProgressBar(lxPB, lX);
 
             double lY = event.getAxisValue(MotionEvent.AXIS_Y);
-            controller.setAxis(Axes.LEFTY, lY);
+            controlInfo.setAxis(Axes.LEFTY, lY);
             updateTextView(lyTV, "Left Y " + String.format("%.2f", lY));
             updateProgressBar(lyPB, lY);
 
             // Right stick
             double rX = event.getAxisValue(MotionEvent.AXIS_Z);
-            controller.setAxis(Axes.RIGHTX, rX);
+            controlInfo.setAxis(Axes.RIGHTX, rX);
             updateTextView(rxTV, "Right X: " + String.format("%.2f", rX));
             updateProgressBar(rxPB, rX);
 
             double rY = event.getAxisValue(MotionEvent.AXIS_RZ);
-            controller.setAxis(Axes.RIGHTY, rY);
+            controlInfo.setAxis(Axes.RIGHTY, rY);
             updateTextView(ryTV, "Right Y: " + String.format("%.2f", rY));
             updateProgressBar(ryPB, rY);
 
             // Triggers
             double lt = event.getAxisValue(MotionEvent.AXIS_LTRIGGER);
-            controller.setAxis(Axes.LTRIGGER, lt);
+            controlInfo.setAxis(Axes.LTRIGGER, lt);
             updateTextView(lTriggerTV, "Left Trigger: " + String.format("%.2f", lt));
             updateProgressBar(lTriggerPB, lt);
 
             double rt = event.getAxisValue(MotionEvent.AXIS_RTRIGGER);
-            controller.setAxis(Axes.RTRIGGER, rt);
+            controlInfo.setAxis(Axes.RTRIGGER, rt);
             updateTextView(rTriggerTV, "Right Trigger: " + String.format("%.2f", rt));
             updateProgressBar(rTriggerPB, rt);
 
@@ -269,14 +281,14 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
             boolean hLeft = event.getAxisValue(MotionEvent.AXIS_HAT_Y) == -1;
             boolean hRight = event.getAxisValue(MotionEvent.AXIS_HAT_Y) == 1;
 
-            controller.setButton(Buttons.DPAD_UP, hUp);
+            controlInfo.setButton(Buttons.DPAD_UP, hUp);
             updateTextView(dpadUpTV, hUp ? "\uD83D\uDFE9" : "\uD83D\uDFE5");
-            controller.setButton(Buttons.DPAD_DOWN, hDown);
+            controlInfo.setButton(Buttons.DPAD_DOWN, hDown);
             updateTextView(dpadDownTV, hDown ? "\uD83D\uDFE9" : "\uD83D\uDFE5");
 
-            controller.setButton(Buttons.DPAD_LEFT, hLeft);
+            controlInfo.setButton(Buttons.DPAD_LEFT, hLeft);
             updateTextView(dpadLeftTV, hLeft ? "\uD83D\uDFE9" : "\uD83D\uDFE5");
-            controller.setButton(Buttons.DPAD_RIGHT, hRight);
+            controlInfo.setButton(Buttons.DPAD_RIGHT, hRight);
             updateTextView(dpadRightTV, hRight ? "\uD83D\uDFE9" : "\uD83D\uDFE5");
 
             return true;
@@ -284,6 +296,14 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
 
         return super.onGenericMotionEvent(event);
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        handler.removeCallbacks(hideRunnable);     // cancel pending hides
+        handler.postDelayed(hideRunnable, 2000);   // re-hide after 2 seconds idle
+        return super.dispatchTouchEvent(event);
+    }
+
 
     public void updateTextView(TextView tv, String message) {
         tv.setText(message);
@@ -293,4 +313,17 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
         int out = Math.toIntExact(Math.round(pb.getMax() * ((val + 1) / 2)));
         pb.setProgress(out);
     }
+
+    private void hideSystemUI() {
+        getWindow().setDecorFitsSystemWindows(false);
+
+        WindowInsetsController controller = getWindow().getInsetsController();
+        if (controller != null) {
+            controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+            controller.setSystemBarsBehavior(
+                    WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            );
+        }
+    }
+
 }

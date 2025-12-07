@@ -1,11 +1,11 @@
 package com.example.myapplication.controller;
 
-public class Controller {
+public class ControlInfo {
 
     private boolean[] buttonState;
     private double[] axisState;
 
-    public Controller() {
+    public ControlInfo() {
         buttonState = new boolean[Buttons.values().length];
         for (Buttons button : Buttons.values()) {
             buttonState[button.ordinal()] = false;

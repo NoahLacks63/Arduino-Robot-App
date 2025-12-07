@@ -12,11 +12,11 @@ import android.widget.Button;
 import com.example.myapplication.R;
 import com.example.myapplication.controller.ControlInfo;
 
-public class EnableFragment extends Fragment {
+public class DisableFragment extends Fragment {
     private ControlInfo controlInfo;
 
-    public EnableFragment(ControlInfo controlInfo) {
-        super(R.layout.fragment_enable);
+    public DisableFragment(ControlInfo controlInfo) {
+        super(R.layout.fragment_disable);
 
         this.controlInfo = controlInfo;
     }
@@ -29,7 +29,7 @@ public class EnableFragment extends Fragment {
 
         button.setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragmentContainerView, new DisableFragment(controlInfo))
+                    .replace(R.id.fragmentContainerView, new EnableFragment(controlInfo))
                     .addToBackStack(null)
                     .commit();
         });
