@@ -11,6 +11,7 @@ import android.widget.Button;
 
 import com.example.myapplication.R;
 import com.example.myapplication.controller.ControlInfo;
+import com.example.myapplication.controller.RobotState;
 
 public class DisableFragment extends Fragment {
     private ControlInfo controlInfo;
@@ -28,9 +29,10 @@ public class DisableFragment extends Fragment {
         Button button = view.findViewById(R.id.btn_Disable);
 
         button.setOnClickListener(v -> {
+            controlInfo.setRobotState(RobotState.ENABLED, false);
+
             requireActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContainerView, new EnableFragment(controlInfo))
-                    .addToBackStack(null)
                     .commit();
         });
     }

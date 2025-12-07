@@ -2,10 +2,16 @@ package com.example.myapplication.controller;
 
 public class ControlInfo {
 
+    private boolean[] robotState;
     private boolean[] buttonState;
     private double[] axisState;
 
     public ControlInfo() {
+        robotState = new boolean[RobotState.values().length];
+        for (RobotState state : RobotState.values()) {
+            robotState[state.ordinal()] = false;
+        }
+
         buttonState = new boolean[Buttons.values().length];
         for (Buttons button : Buttons.values()) {
             buttonState[button.ordinal()] = false;
@@ -31,6 +37,10 @@ public class ControlInfo {
 
     public void setAxis(Axes axis, double value) {
         axisState[axis.ordinal()] = value;
+    }
+
+    public void setRobotState(RobotState state, boolean value) {
+        robotState[state.ordinal()] = value;
     }
 
     public byte[] getMessage() {

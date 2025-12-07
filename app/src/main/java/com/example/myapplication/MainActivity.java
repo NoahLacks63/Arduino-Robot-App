@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentManager;
 import com.example.myapplication.controller.Axes;
 import com.example.myapplication.controller.Buttons;
 import com.example.myapplication.controller.ControlInfo;
+import com.example.myapplication.fragments.EnableFragment;
 import com.example.myapplication.udp.UDPReceiver;
 import com.example.myapplication.udp.UDPSender;
 
@@ -131,6 +132,10 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
         udpReceiverThread = new Thread(receiver);
 
         fragmentManager = getSupportFragmentManager();
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerView, new EnableFragment(controlInfo))
+                .commit();
     }
 
     @Override
