@@ -8,7 +8,7 @@ import java.net.InetAddress;
 
 public class UDPSender implements Runnable{
     private static final String HOST = "125.00.00";
-    private static final int PORT = 1234;
+    private static final int PORT = 2390;
 
     private boolean running = true;
 

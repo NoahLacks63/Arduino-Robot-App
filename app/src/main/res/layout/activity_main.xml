@@ -5,4 +5,274 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"/>
+    tools:context=".MainActivity">
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="0dp"
+        android:layout_height="5dp"
+        android:background="#000000"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_RobotConnected"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:text="Robot: Connected"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:padding="5dp"
+            android:text="11.1v"
+            android:textSize="24sp" />
+
+        <ProgressBar
+            android:id="@+id/progressBar8"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="5dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view3">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/tv_LeftX"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Left X: 0.5" />
+
+            <ProgressBar
+                android:id="@+id/pb_LeftX"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_LeftY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Left Y: 0.5" />
+
+            <ProgressBar
+                android:id="@+id/pb_LeftY"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_RightX"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Right X: 0.5" />
+
+            <ProgressBar
+                android:id="@+id/pb_RightX"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_RightY"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Right Y: 0.45" />
+
+            <ProgressBar
+                android:id="@+id/pb_RightY"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/tv_LeftStick"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Left Stick: " />
+
+            <TextView
+                android:id="@+id/tv_RightStick"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Right Stick: " />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/tv_LTrigger"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Left Trigger: 0.5" />
+
+            <ProgressBar
+                android:id="@+id/pb_LTrigger"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_RTrigger"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Right Trigger: 0.5" />
+
+            <ProgressBar
+                android:id="@+id/pb_RTrigger"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tv_LB"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Left Bumper: " />
+
+            <TextView
+                android:id="@+id/tv_RB"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Right Bumper: " />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/tv_DpadUp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="DPAD Up: " />
+
+            <TextView
+                android:id="@+id/tv_DpadDown"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="DPAD Down: " />
+
+            <TextView
+                android:id="@+id/tv_DpadLeft"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="DPAD Left: " />
+
+            <TextView
+                android:id="@+id/tv_DpadRight"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="DPAD Right: " />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/tv_A"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="A: " />
+
+            <TextView
+                android:id="@+id/tv_B"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="B: " />
+
+            <TextView
+                android:id="@+id/tv_X"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="X: " />
+
+            <TextView
+                android:id="@+id/tv_Y"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Y: " />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/tv_Start"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Start: " />
+
+            <TextView
+                android:id="@+id/tv_Select"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Select: " />
+
+            <TextView
+                android:id="@+id/tv_Mode"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Mode: " />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_settings_24" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

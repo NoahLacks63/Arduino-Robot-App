@@ -3,9 +3,12 @@ package com.example.myapplication;
 import android.content.Context;
 import android.hardware.input.InputManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -22,31 +25,83 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity implements InputManager.InputDeviceListener {
     private InputManager inputManager;
 
+    //buttons
+    private TextView aTV;
+    private TextView bTV;
+    private TextView xTV;
+    private TextView yTV;
+    private TextView dpadUpTV;
+    private TextView dpadDownTV;
+    private TextView dpadLeftTV;
+    private TextView dpadRightTV;
+    private TextView selectTV;
+    private TextView startTV;
+    private TextView modeTV;
+
+    //sticks
+    private TextView lxTV;
+    private ProgressBar lxPB;
+    private TextView lyTV;
+    private ProgressBar lyPB;
+    private TextView lstickTV;
+    private TextView rxTV;
+    private ProgressBar rxPB;
+    private TextView ryTV;
+    private ProgressBar ryPB;
+    private TextView rstickTV;
+
+    //triggers
+    private TextView lTriggerTV;
+    private ProgressBar lTriggerPB;
+    private TextView rTriggerTV;
+    private ProgressBar rTriggerPB;
+
+    private Set<InputDevice> controllers;
+
+    private Controller controller;
+
+    private UDPSender udpSender;
+    private UDPReceiver receiver;
+
+    private Thread udpSenderThread;
+    private Thread udpReceiverThread;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ConstraintLayout output = findViewById(R.id.main);
-
-        // Ensure Activity receives key events
-        output.setFocusable(true);
-        output.setFocusableInTouchMode(true);
-        output.requestFocus();
+        setContentView(R.layout.activity_main);
 
         inputManager = (InputManager) getSystemService(Context.INPUT_SERVICE);
+
+        lxTV = findViewById(R.id.tv_LeftX);
+        lxPB = findViewById(R.id.pb_LeftX);
+        lyTV = findViewById(R.id.tv_LeftY);
+        lyPB = findViewById(R.id.pb_LeftY);
+
+        rxTV = findViewById(R.id.tv_RightX);
+        rxPB = findViewById(R.id.pb_RightX);
+        ryTV = findViewById(R.id.tv_RightY);
+        ryPB = findViewById(R.id.pb_RightY);
+
+        lTriggerTV = findViewById(R.id.tv_LTrigger);
+        lTriggerPB = findViewById(R.id.pb_LTrigger);
+        rTriggerTV = findViewById(R.id.tv_RTrigger);
+        rTriggerPB = findViewById(R.id.pb_RTrigger);
+
+        controllers = new HashSet<>();
+
+        controller = new Controller();
+
+        udpSender = new UDPSender();
+        receiver = new UDPReceiver();
+
+        // TODO start sender thread
+        udpSenderThread = new Thread(udpSender);
+        // TODO start receiver thread
+        udpReceiverThread = new Thread(receiver);
     }
-
-    Set<InputDevice> controllers = new HashSet<>();
-
-    Controller controller = new Controller();
-
-    UDPSender udpSender = new UDPSender();
-    UDPReceiver receiver = new UDPReceiver();
-
-    // TODO start sender thread
-    Thread udpSenderThread = new Thread(udpSender);
-    // TODO start receiver thread
-    Thread udpReceiverThread = new Thread(receiver);
 
     @Override
     public void onInputDeviceAdded(int deviceId) {
@@ -70,26 +125,13 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
     }
 
     // Handle controller buttons
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (updateButton(keyCode, true)) {
-            return true;
-        } else {
-            return super.onKeyDown(keyCode, event);
-        }
-    }
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        int key = event.getKeyCode();
 
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (updateButton(keyCode, false)) {
-            return true;
-        } else {
-            return super.onKeyUp(keyCode, event);
-        }
-    }
+        boolean value = (action == KeyEvent.ACTION_DOWN);
 
-    private boolean updateButton(int keyCode, boolean value) {
-        switch (keyCode) {
+        switch (key) {
             case KeyEvent.KEYCODE_BUTTON_A:
                 controller.setButton(Buttons.A, value);
                 return true;
@@ -139,30 +181,62 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
 
         udpSender.setMessage(controller.getMessage());
 
-        return false;
+        return super.dispatchKeyEvent(event);
     }
 
     // Handle analog sticks and triggers
     @Override
-    public boolean onGenericMotionEvent(MotionEvent event) {
+    public boolean dispatchGenericMotionEvent(MotionEvent event) {
         if ((event.getSource() & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK &&
                 event.getAction() == MotionEvent.ACTION_MOVE) {
 
             // Left stick
-            controller.setAxis(Axes.LEFTX, event.getAxisValue(MotionEvent.AXIS_X));
-            controller.setAxis(Axes.LEFTY, event.getAxisValue(MotionEvent.AXIS_Y));
+            double lX = event.getAxisValue(MotionEvent.AXIS_X);
+            controller.setAxis(Axes.LEFTX, lX);
+            updateTextView(lxTV, "Left X " + lX);
+            updateProgressBar(lxPB, lX);
+
+            double lY = event.getAxisValue(MotionEvent.AXIS_Y);
+            controller.setAxis(Axes.LEFTY, lY);
+            updateTextView(lyTV, "Left Y " + lY);
+            updateProgressBar(lyPB, lY);
 
             // Right stick
-            controller.setAxis(Axes.RIGHTX, event.getAxisValue(MotionEvent.AXIS_Z));
-            controller.setAxis(Axes.RIGHTY, event.getAxisValue(MotionEvent.AXIS_RZ));
+            double rX = event.getAxisValue(MotionEvent.AXIS_Z);
+            controller.setAxis(Axes.RIGHTX, rX);
+            updateTextView(rxTV, "Right X: " + rX);
+            updateProgressBar(rxPB, rX);
+
+            double rY = event.getAxisValue(MotionEvent.AXIS_RZ);
+            controller.setAxis(Axes.RIGHTY, rY);
+            updateTextView(ryTV, "Right Y: " + rY);
+            updateProgressBar(ryPB, rY);
 
             // Triggers
-            controller.setAxis(Axes.LTRIGGER, event.getAxisValue(MotionEvent.AXIS_LTRIGGER));
-            controller.setAxis(Axes.RTRIGGER, event.getAxisValue(MotionEvent.AXIS_RTRIGGER));
+            double lt = event.getAxisValue(MotionEvent.AXIS_LTRIGGER);
+            controller.setAxis(Axes.LTRIGGER, lt);
+            updateTextView(lTriggerTV, "Left Trigger: " + lt);
+            updateProgressBar(lTriggerPB, lt);
+
+            double rt = event.getAxisValue(MotionEvent.AXIS_RTRIGGER);
+            controller.setAxis(Axes.RTRIGGER, rt);
+            updateTextView(rTriggerTV, "Right Trigger: " + rt);
+            updateProgressBar(rTriggerPB, rt);
 
             return true;
         }
 
         return super.onGenericMotionEvent(event);
+    }
+
+    public void updateTextView(TextView tv, String message) {
+        tv.setText(message);
+    }
+
+    public void updateProgressBar(ProgressBar pb, double val) {
+        int out = Math.toIntExact(Math.round(pb.getMax() * (
+                (val + 1) / 2))
+        );
+        pb.setProgress(out);
     }
 }
