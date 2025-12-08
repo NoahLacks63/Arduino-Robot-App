@@ -6,20 +6,21 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
 public class UDPReceiver implements Runnable {
+    // SINGLETON
+    private static UDPReceiver udpReceiver;
+    public static UDPReceiver getInstance() {
+        if (udpReceiver == null) {
+            udpReceiver = new UDPReceiver();
+        }
+
+        return udpReceiver;
+    }
 
     private enum messageContents {
         //First byte
         VOLTAGE_LOW,
         VOLTAGE_HIGH
         //Last byte
-    }
-
-    public byte[] getMessage() {
-        return message;
-    }
-
-    public void setMessage(byte[] message) {
-        this.message = message;
     }
 
     public interface Listener {
@@ -30,6 +31,8 @@ public class UDPReceiver implements Runnable {
     private final Listener listener;
 
     private volatile boolean running = true;
+    private volatile boolean paused = true;
+
     private volatile byte[] message = new byte[0];
 
     public UDPReceiver() {
@@ -51,17 +54,19 @@ public class UDPReceiver implements Runnable {
             byte[] buffer = new byte[1024];
 
             while (running) {
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                if (paused) {
+                    DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
-                // Wait for next packet (blocking)
-                socket.receive(packet);
+                    // Wait for next packet (blocking)
+                    socket.receive(packet);
 
-                byte[] msg = packet.getData();
-                String senderIp = packet.getAddress().getHostAddress();
-                int senderPort = packet.getPort();
+                    byte[] msg = packet.getData();
+                    String senderIp = packet.getAddress().getHostAddress();
+                    int senderPort = packet.getPort();
 
-                // Pass the message to whoever wants it
-                listener.onMessage(msg, senderIp, senderPort);
+                    // Pass the message to whoever wants it
+                    listener.onMessage(msg, senderIp, senderPort);
+                }
             }
 
         } catch (Exception e) {
@@ -78,6 +83,22 @@ public class UDPReceiver implements Runnable {
 
         // Convert back to double
         return s / 32767.0;
+    }
+
+    public byte[] getMessage() {
+        return message;
+    }
+
+    public void setMessage(byte[] message) {
+        this.message = message;
+    }
+
+    public void pause() {
+        paused = true;
+    }
+
+    public void unpause() {
+        paused = false;
     }
 }
 

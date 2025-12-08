@@ -2,6 +2,12 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.hardware.input.InputManager;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -23,11 +29,12 @@ import com.example.myapplication.fragments.EnableFragment;
 import com.example.myapplication.udp.UDPReceiver;
 import com.example.myapplication.udp.UDPSender;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements InputManager.InputDeviceListener {
+    private ConnectivityManager cm;
+    private ConnectivityManager.NetworkCallback callback;
     private InputManager inputManager;
 
     //buttons
@@ -68,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
     private ControlInfo controlInfo;
 
     private UDPSender udpSender;
-    private UDPReceiver receiver;
+    private UDPReceiver udpReceiver;
 
     private Thread udpSenderThread;
     private Thread udpReceiverThread;
@@ -124,12 +131,12 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
 
         controlInfo = new ControlInfo();
 
-        udpSender = new UDPSender();
-        receiver = new UDPReceiver();
+        udpSender = UDPSender.getInstance();
+        udpReceiver = UDPReceiver.getInstance();
 
         udpSenderThread = new Thread(udpSender);
         // TODO start receiver thread
-        udpReceiverThread = new Thread(receiver);
+        udpReceiverThread = new Thread(udpReceiver);
 
         fragmentManager = getSupportFragmentManager();
 
@@ -138,6 +145,40 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
                 .commit();
 
         udpSenderThread.start();
+
+        cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkRequest request = new NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .build();
+
+        callback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(Network network) {
+                super.onAvailable(network);
+                WifiManager wifiManager =
+                        (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
+                WifiInfo info = wifiManager.getConnectionInfo();
+                String ssid = info.getSSID();
+                if (ssid.equals(UDPSender.HOST)) {
+                    udpSender.unpause();
+                    udpReceiver.unpause();
+                }
+                Log.d("WIFI", "WiFi CONNECTED");
+            }
+
+            @Override
+            public void onLost(Network network) {
+                super.onLost(network);
+                udpSender.pause();
+                udpReceiver.pause();
+                Log.d("WIFI", "WiFi DISCONNECTED");
+            }
+        };
+
+        cm.registerNetworkCallback(request, callback);
+
     }
 
     @Override
@@ -331,5 +372,18 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
             );
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (cm != null && callback != null) {
+            cm.unregisterNetworkCallback(callback);
+        }
+
+        udpSender.stop();
+        udpReceiver.stop();
+    }
+
+
 
 }
