@@ -19,6 +19,7 @@ import android.view.WindowInsetsController;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -146,35 +147,44 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
 
         udpSenderThread.start();
 
+
         cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkRequest request = new NetworkRequest.Builder()
                 .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
                 .build();
 
+
         callback = new ConnectivityManager.NetworkCallback() {
             @Override
-            public void onAvailable(Network network) {
+            public void onAvailable(@NonNull Network network) {
                 super.onAvailable(network);
                 WifiManager wifiManager =
                         (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
                 WifiInfo info = wifiManager.getConnectionInfo();
+
                 String ssid = info.getSSID();
+
                 if (ssid.equals(UDPSender.HOST)) {
                     udpSender.unpause();
                     udpReceiver.unpause();
+
                 }
+
+
                 Log.d("WIFI", "WiFi CONNECTED");
             }
 
             @Override
-            public void onLost(Network network) {
+            public void onLost(@NonNull Network network) {
                 super.onLost(network);
                 udpSender.pause();
                 udpReceiver.pause();
                 Log.d("WIFI", "WiFi DISCONNECTED");
             }
+
+
         };
 
         cm.registerNetworkCallback(request, callback);
