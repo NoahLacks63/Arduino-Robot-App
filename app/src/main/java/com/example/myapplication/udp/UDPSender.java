@@ -7,7 +7,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class UDPSender implements Runnable{
-    private static final String HOST = "125.00.00";
+    private static final String HOST = "192.168.4.1";
     private static final int PORT = 2390;
 
     private boolean running = true;
@@ -40,5 +40,9 @@ public class UDPSender implements Runnable{
 
     public void setMessage(byte[] message) {
         this.message = message;
+    }
+
+    public byte[] getMessage() {
+        return message;
     }
 }

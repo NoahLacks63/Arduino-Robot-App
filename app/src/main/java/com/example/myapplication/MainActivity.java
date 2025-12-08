@@ -23,6 +23,7 @@ import com.example.myapplication.fragments.EnableFragment;
 import com.example.myapplication.udp.UDPReceiver;
 import com.example.myapplication.udp.UDPSender;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -126,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
         udpSender = new UDPSender();
         receiver = new UDPReceiver();
 
-        // TODO start sender thread
         udpSenderThread = new Thread(udpSender);
         // TODO start receiver thread
         udpReceiverThread = new Thread(receiver);
@@ -136,6 +136,8 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
         fragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainerView, new EnableFragment(controlInfo))
                 .commit();
+
+        udpSenderThread.start();
     }
 
     @Override
@@ -165,9 +167,6 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
         int key = event.getKeyCode();
 
         boolean value = (action == KeyEvent.ACTION_DOWN);
-
-        Log.d("CONTROLLER", "Key: " + key);
-        Log.d("CONTROLLER", "Val: " + value);
 
         TextView tv;
 
@@ -295,6 +294,8 @@ public class MainActivity extends AppCompatActivity implements InputManager.Inpu
             updateTextView(dpadLeftTV, hLeft ? "\uD83D\uDFE9" : "\uD83D\uDFE5");
             controlInfo.setButton(Buttons.DPAD_RIGHT, hRight);
             updateTextView(dpadRightTV, hRight ? "\uD83D\uDFE9" : "\uD83D\uDFE5");
+
+            udpSender.setMessage(controlInfo.getMessage());
 
             return true;
         }
